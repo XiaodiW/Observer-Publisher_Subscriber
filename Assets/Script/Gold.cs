@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 namespace Script {
 
@@ -15,8 +14,10 @@ namespace Script {
                 if(value < 0) value = 0;
                 _amount = value;
                 ONAmountChange?.Invoke(value);
-                if(this._amount >= 100) to100Achievement.AchievementGained();
-                if(this._amount >= 1000) to1000Achievement.AchievementGained();
+                // if(this._amount >= 100) to100Achievement.AchievementGained(); //Step1
+                // if(this._amount >= 1000) to1000Achievement.AchievementGained();//Step1
+                to100Achievement.AmountUpdate(value); //Step2
+                to1000Achievement.AmountUpdate(value); //Step2
             }
         }
         public Gold(int amount) {
@@ -30,22 +31,22 @@ namespace Script {
     }
 
     public class GoldReach100Achievement {
-        public event Action<string> onAchieve100; 
-        public string Text;
-
-        public void AchievementGained() {
-            // Text = "Gold Reach 100";
+        public event Action<string> onAchieve100;
+        public void AchievementGained() {//Step 1
             onAchieve100?.Invoke("Gold Reach 100");
+        }
+        public void AmountUpdate(int a) { //Step 2
+            if(a >= 100) onAchieve100?.Invoke("Gold Reach 100");
         }
     }
     
     public class GoldReach1000Achievement {
-        public event Action<string> onAchieve1000; 
-        public string Text;
-
-        public void AchievementGained() {
-            // Text = "Gold Reach 100";
-            onAchieve1000?.Invoke("Gold Reach 1000");
+        public event Action<string> onAchieve1000;
+        public void AchievementGained() {//Step 1
+                onAchieve1000?.Invoke("Gold Reach 1000");
+        }
+        public void AmountUpdate(int a) { //Step 2
+            if(a >= 1000) onAchieve1000?.Invoke("Gold Reach 1000");
         }
     }
 
