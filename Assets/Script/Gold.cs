@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Linq;
 
 namespace Script {
 
     public class Gold {
         private int _amount;
         public static event Action<int> ONAmountChange;
-        public GoldReach100Achievement to100Achievement;
-        public GoldReach1000Achievement to1000Achievement;
+        // public GoldReach100Achievement to100Achievement; //Step1-2
+        // public GoldReach1000Achievement to1000Achievement; //Step1-2
+        readonly IGoldReachAchievement[] goldReachAchievements; //Step3
         
         public int Amount { 
             get => this._amount;
@@ -16,37 +18,51 @@ namespace Script {
                 ONAmountChange?.Invoke(value);
                 // if(this._amount >= 100) to100Achievement.AchievementGained(); //Step1
                 // if(this._amount >= 1000) to1000Achievement.AchievementGained();//Step1
-                to100Achievement.AmountUpdate(value); //Step2
-                to1000Achievement.AmountUpdate(value); //Step2
+                // to100Achievement.AmountUpdate(value); //Step2
+                // to1000Achievement.AmountUpdate(value); //Step2
+                foreach(var goldReachAchievement in goldReachAchievements) { //Step3
+                    goldReachAchievement.AmountUpdate(value);
+                }
             }
         }
-        public Gold(int amount) {
+        public Gold(int amount, IGoldReachAchievement[] goldReachAchievements) {
             this._amount = amount;
-            this.to100Achievement = new GoldReach100Achievement();
-            this.to1000Achievement = new GoldReach1000Achievement();
+            // this.to100Achievement = new GoldReach100Achievement();//Step1-2
+            // this.to1000Achievement = new GoldReach1000Achievement();//Step1-2
+            this.goldReachAchievements = goldReachAchievements; //Step3
         }
         public void ClicktoAdd(int add) {
             Amount += add;
         }
     }
-
-    public class GoldReach100Achievement {
-        public event Action<string> onAchieve100;
-        public void AchievementGained() {//Step 1
-            onAchieve100?.Invoke("Gold Reach 100");
-        }
-        public void AmountUpdate(int a) { //Step 2
-            if(a >= 100) onAchieve100?.Invoke("Gold Reach 100");
-        }
+    
+    public interface IGoldReachAchievement {
+        void AmountUpdate(int a);
+        event Action<string> onAchieve;
     }
     
-    public class GoldReach1000Achievement {
-        public event Action<string> onAchieve1000;
+    public class GoldReach100Achievement : IGoldReachAchievement {
+        // public event Action<string> onAchieve100; //Step1-2
+        public event Action<string> onAchieve;//Step3
         public void AchievementGained() {//Step 1
-                onAchieve1000?.Invoke("Gold Reach 1000");
+            // onAchieve100?.Invoke("Gold Reach 100");//Step1-2
+            onAchieve?.Invoke("Gold Reach 100"); //Step3
         }
         public void AmountUpdate(int a) { //Step 2
-            if(a >= 1000) onAchieve1000?.Invoke("Gold Reach 1000");
+            if(a >= 100) AchievementGained();
+        }
+
+
+    }
+    public class GoldReach1000Achievement : IGoldReachAchievement{
+        // public event Action<string> onAchieve1000; //Step1-2
+        public event Action<string> onAchieve; //Step3
+        public void AchievementGained() {//Step 1
+            // onAchieve1000?.Invoke("Gold Reach 1000");//Step1-2
+            onAchieve?.Invoke("Gold Reach 1000");//Step3
+        }
+        public void AmountUpdate(int a) { //Step 2
+            if(a >= 1000) AchievementGained();
         }
     }
 
