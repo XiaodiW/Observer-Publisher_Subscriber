@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Script {
@@ -9,7 +10,16 @@ namespace Script {
         // public GoldReach100Achievement to100Achievement; //Step1-2
         // public GoldReach1000Achievement to1000Achievement; //Step1-2
         // readonly IGoldReachAchievement[] goldReachAchievements; //Step3
-        readonly IGoldReachObserver[] goldReachObservers; //Step4
+        // readonly IGoldReachObserver[] goldReachObservers; //Step4
+        readonly List<IGoldReachObserver> goldReachObservers; //Step5
+
+        public void SubscribToGoldAmount(IGoldReachObserver goldReachObserver) {
+            goldReachObservers.Add(goldReachObserver);
+        }
+
+        public void UnsubscriptToGoldAmount(IGoldReachObserver goldReachObserver) {
+            goldReachObservers.Remove(goldReachObserver);
+        }
         
         public int Amount { 
             get => this._amount;
@@ -29,13 +39,15 @@ namespace Script {
                 }
             }
         }
+        public Gold(int amount){ //Step1-2,5
         // public Gold(int amount, IGoldReachAchievement[] goldReachAchievements) { //Step3
-        public Gold(int amount, IGoldReachObserver[] goldReachObservers) { //Step4
+        // public Gold(int amount, IGoldReachObserver[] goldReachObservers) { //Step4
             this._amount = amount;
             // this.to100Achievement = new GoldReach100Achievement();//Step1-2
             // this.to1000Achievement = new GoldReach1000Achievement();//Step1-2
             // this.goldReachAchievements = goldReachAchievements; //Step3
-            this.goldReachObservers = goldReachObservers; //Step4
+            // this.goldReachObservers = goldReachObservers; //Step4
+            goldReachObservers = new List<IGoldReachObserver>(); //Step5
         }
         public void ClicktoAdd(int add) {
             Amount += add;
