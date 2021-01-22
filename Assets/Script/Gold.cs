@@ -8,7 +8,8 @@ namespace Script {
         public static event Action<int> ONAmountChange;
         // public GoldReach100Achievement to100Achievement; //Step1-2
         // public GoldReach1000Achievement to1000Achievement; //Step1-2
-        readonly IGoldReachAchievement[] goldReachAchievements; //Step3
+        // readonly IGoldReachAchievement[] goldReachAchievements; //Step3
+        readonly IGoldReachObserver[] goldReachObservers; //Step4
         
         public int Amount { 
             get => this._amount;
@@ -20,28 +21,34 @@ namespace Script {
                 // if(this._amount >= 1000) to1000Achievement.AchievementGained();//Step1
                 // to100Achievement.AmountUpdate(value); //Step2
                 // to1000Achievement.AmountUpdate(value); //Step2
-                foreach(var goldReachAchievement in goldReachAchievements) { //Step3
-                    goldReachAchievement.AmountUpdate(value);
+                // foreach(var goldReachAchievement in goldReachAchievements) { //Step3
+                //     goldReachAchievement.AmountUpdate(value);
+                // }
+                foreach(var goldReachObserver in goldReachObservers) { //Step4
+                    goldReachObserver.AmountUpdate(value);
                 }
             }
         }
-        public Gold(int amount, IGoldReachAchievement[] goldReachAchievements) {
+        // public Gold(int amount, IGoldReachAchievement[] goldReachAchievements) { //Step3
+        public Gold(int amount, IGoldReachObserver[] goldReachObservers) { //Step4
             this._amount = amount;
             // this.to100Achievement = new GoldReach100Achievement();//Step1-2
             // this.to1000Achievement = new GoldReach1000Achievement();//Step1-2
-            this.goldReachAchievements = goldReachAchievements; //Step3
+            // this.goldReachAchievements = goldReachAchievements; //Step3
+            this.goldReachObservers = goldReachObservers; //Step4
         }
         public void ClicktoAdd(int add) {
             Amount += add;
         }
     }
     
-    public interface IGoldReachAchievement {
+    // public interface IGoldReachAchievement { //Step3
+    public interface IGoldReachObserver { //Step4
         void AmountUpdate(int a);
         event Action<string> onAchieve;
     }
     
-    public class GoldReach100Achievement : IGoldReachAchievement {
+    public class GoldReach100Achievement : IGoldReachObserver {
         // public event Action<string> onAchieve100; //Step1-2
         public event Action<string> onAchieve;//Step3
         public void AchievementGained() {//Step 1
@@ -54,7 +61,7 @@ namespace Script {
 
 
     }
-    public class GoldReach1000Achievement : IGoldReachAchievement{
+    public class GoldReach1000Achievement : IGoldReachObserver{
         // public event Action<string> onAchieve1000; //Step1-2
         public event Action<string> onAchieve; //Step3
         public void AchievementGained() {//Step 1

@@ -18,9 +18,9 @@ namespace Script {
             // gold.to1000Achievement.onAchieve1000 += onAchieveChange; //Step1-2
             GoldReach100Achievement I1 = new GoldReach100Achievement();
             GoldReach1000Achievement I2 = new GoldReach1000Achievement();
-            var types = new IGoldReachAchievement[] {I1, I2};
+            var types = new IGoldReachObserver[] {I1, I2};
             this.gold = new Gold(0,types);//Step3
-            foreach(IGoldReachAchievement type in types) {//Step3
+            foreach(IGoldReachObserver type in types) {//Step3
                 type.onAchieve += onAchieveChange;
             }
             gold.ClicktoAdd(0); //Initialize Gold Amount UI.
