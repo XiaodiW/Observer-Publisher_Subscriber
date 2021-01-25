@@ -6,15 +6,17 @@ namespace Script {
         // public event Action<string> onAchieve;
         
         public GoldReach100Achievement() {
-            Dependencies.broker.SubscribeTo("GoldAmount",AmountUpdate);       
+            // Dependencies.broker.SubscribeTo("GoldAmount",AmountUpdate);       
+            Dependencies.broker.SubscribeTo<GoldAmountChangeMessage>(AmountUpdate);
         }
         public void AchievementGained() {
             // onAchieve?.Invoke("Gold Reach 100");
-            Dependencies.broker.Publish("Achievement100", "Gold Reach 100");
+            // Dependencies.broker.Publish("Achievement100", "Gold Reach 100");
+            Dependencies.broker.Publish<AchievementMassage>(new AchievementMassage("Gold Reach 100"));
         }
 
-        public void AmountUpdate(object a) {
-            if((int)a >= 100) AchievementGained();
+        public void AmountUpdate(GoldAmountChangeMessage a) {
+            if((int)a.Amount >= 100) AchievementGained();
         }
     }
 

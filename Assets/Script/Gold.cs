@@ -59,7 +59,8 @@ namespace Script {
         {  
             // broker.Publish(new Mymessage());  
             // broker.Publish(value);  
-            Dependencies.broker.Publish("GoldAmount",value);
+            // Dependencies.broker.Publish("GoldAmount",value);
+            Dependencies.broker.Publish<GoldAmountChangeMessage>(new GoldAmountChangeMessage(value));
         } 
         public void ClicktoAdd(int add) {
             Amount += add;

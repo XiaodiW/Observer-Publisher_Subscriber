@@ -39,18 +39,20 @@ namespace Script {
             // broker.Subscribe<int>(I2.AmountUpdate);
             // I1.onAchieve += onAchieveChange;//Step5-6
             // I2.onAchieve += onAchieveChange;//Step5-6
-            Dependencies.broker.SubscribeTo("GoldAmount",onAmountChange);
-            Dependencies.broker.SubscribeTo("Achievement100", onAchieveChange);
-            Dependencies.broker.SubscribeTo("Achievement1000", onAchieveChange);
+            // Dependencies.broker.SubscribeTo("GoldAmount",onAmountChange);
+            Dependencies.broker.SubscribeTo<GoldAmountChangeMessage>(onAmountChange);
+            // Dependencies.broker.SubscribeTo("Achievement100", onAchieveChange);
+            // Dependencies.broker.SubscribeTo("Achievement1000", onAchieveChange);
+            Dependencies.broker.SubscribeTo<AchievementMassage>(onAchieveChange);
             gold.ClicktoAdd(0); //Initialize Gold Amount UI.
         }
 
-        private void onAmountChange(object a) {
-            amountText.text = a.ToString();
+        private void onAmountChange(GoldAmountChangeMessage a) {
+            amountText.text = a.Amount.ToString();
         }
 
-        private void onAchieveChange(object s) {
-            achievementText.text = (string)s;
+        private void onAchieveChange(AchievementMassage s) {
+            achievementText.text = (string)s.Massage;
         }
 
         public void onClickAdd(int a) {
