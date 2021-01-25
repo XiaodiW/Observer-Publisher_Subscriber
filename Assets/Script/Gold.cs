@@ -6,7 +6,7 @@ namespace Script {
 
     public class Gold {
         private int _amount;
-        public static event Action<int> ONAmountChange;
+        // public static event Action<int> OnAmountChange; //For UI Display.
         // public GoldReach100Achievement to100Achievement; //Step1-2
         // public GoldReach1000Achievement to1000Achievement; //Step1-2
         // readonly IGoldReachAchievement[] goldReachAchievements; //Step3
@@ -20,15 +20,15 @@ namespace Script {
         //     goldReachObservers.Remove(goldReachObserver);
         // }
 
-        public delegate void GoldReachObserver(int newGoldAmount);
-
-        public event GoldReachObserver GoldObserver;
+        // public delegate void GoldReachObserver(int newGoldAmount);// Step6-7
+        // public event GoldReachObserver GoldObserver;// Step6-7
+        // private Broker broker;
         public int Amount { 
             get => this._amount;
             private set {
                 if(value < 0) value = 0;
                 _amount = value;
-                ONAmountChange?.Invoke(value);
+                // OnAmountChange?.Invoke(value);
                 // if(this._amount >= 100) to100Achievement.AchievementGained(); //Step1
                 // if(this._amount >= 1000) to1000Achievement.AchievementGained();//Step1
                 // to100Achievement.AmountUpdate(value); //Step2
@@ -39,7 +39,8 @@ namespace Script {
                 // foreach(var goldReachObserver in goldReachObservers) { //Step4-5
                 //     goldReachObserver.AmountUpdate(value);
                 // }
-                GoldObserver?.Invoke(value);
+                // GoldObserver?.Invoke(value);// Step6-7
+                PublishMessage(value);
             }
         }
         public Gold(int amount){ //Step1-2,5
@@ -51,7 +52,15 @@ namespace Script {
             // this.goldReachAchievements = goldReachAchievements; //Step3
             // this.goldReachObservers = goldReachObservers; //Step4
             // goldReachObservers = new List<IGoldReachObserver>(); //Step5
+            // this.broker = broker;
         }
+        
+        public void PublishMessage(int value)  
+        {  
+            // broker.Publish(new Mymessage());  
+            // broker.Publish(value);  
+            Dependencies.broker.Publish("GoldAmount",value);
+        } 
         public void ClicktoAdd(int add) {
             Amount += add;
         }
@@ -62,67 +71,4 @@ namespace Script {
     //     void AmountUpdate(int a);
     //     event Action<string> onAchieve;
     // }
-    
-    /*public class GoldReach100Achievement : IGoldReachObserver { //Step 3-5
-        // public event Action<string> onAchieve100; //Step1-2
-        public event Action<string> onAchieve;//Step3
-        public void AchievementGained() {//Step 1
-            // onAchieve100?.Invoke("Gold Reach 100");//Step1-2
-            onAchieve?.Invoke("Gold Reach 100"); //Step3
-        }
-        public void AmountUpdate(int a) { //Step 2
-            if(a >= 100) AchievementGained();
-        }
-    }*/
-    public class GoldReach100Achievement { //Step 6
-        private readonly Gold gold;
-
-        public GoldReach100Achievement(Gold gold) {
-            this.gold = gold;
-            gold.GoldObserver += AmountUpdate;
-        }
-
-        public event Action<string> onAchieve;
-
-        public void AchievementGained() {
-            onAchieve?.Invoke("Gold Reach 100");
-        }
-
-        public void AmountUpdate(int a) {
-            if(a >= 100) AchievementGained();
-        }
-    }
-
-
-
-    /*public class GoldReach1000Achievement : IGoldReachObserver{
-        // public event Action<string> onAchieve1000; //Step1-2
-        public event Action<string> onAchieve; //Step3
-        public void AchievementGained() {//Step 1
-            // onAchieve1000?.Invoke("Gold Reach 1000");//Step1-2
-            onAchieve?.Invoke("Gold Reach 1000");//Step3
-        }
-        public void AmountUpdate(int a) { //Step 2
-            if(a >= 1000) AchievementGained();
-        }
-    }*/
-
-    public class GoldReach1000Achievement { //Step 6
-        private readonly Gold gold;
-
-        public GoldReach1000Achievement(Gold gold) {
-            this.gold = gold;
-            gold.GoldObserver += AmountUpdate;
-        }
-
-        public event Action<string> onAchieve;
-
-        public void AchievementGained() {
-            onAchieve?.Invoke("Gold Reach 1000");
-        }
-
-        public void AmountUpdate(int a) {
-            if(a >= 1000) AchievementGained();
-        }
-    }
 }
